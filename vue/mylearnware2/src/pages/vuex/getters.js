@@ -3,8 +3,8 @@ var axios= require('../axios');
 
 const getters = {
 
-  todoItems: (state) => {
-    return state.todoItems
+  localItems: (state) => {
+    return state.localItems
   }
 
 };

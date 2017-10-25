@@ -5,54 +5,63 @@ var API_TODO_ROUTER ="/db/todo";
 
 const actions = {
 
-  InitTodoItem ({ commit }) {
-    return new Promise((on_result) =>{
-        console.log('actions InitTodoItem');
-        axios.get(API_TODO_ROUTER)
-        .then(function (response){
-          commit('initTodoItems', response.data);
 
-          console.log(response);
-          on_result({result:true, message:response.data});
-        })
-        .catch( function (error)   {
-          console.log('error');
-          on_result({result:false, message:error});
-        } );
-    });
-  },
+    AddItem({ commit }, itemObj) {
+        console.log("Step:1.000--actions AddItem()");
+        commit('addItem', itemObj);
+    },
 
 
-
-  AddTodoItem({ commit }, item) {
-
-    axios.post(API_TODO_ROUTER, item)
-      .then(function (response){
-        commit('addTodoItem', response.data);
-      })
-      .catch( function (error)   { console.log(error);  } );
-  },
-
-  ToggleFinishedTodoItem ({ commit }, item) {
-
-    axios.put(API_TODO_ROUTER+"/"+item._id, {isFinished: !(item.isFinished)})
-      .then(function (response){
-        commit('toggleFinishedTodoItem', item._id);
-      })
-      .catch( function (error)   { console.log(error);  } );
-  },
+    ChangeItem({ commit }, itemObjWithIndex) {
+        console.log("Step:1.100--actions ChangeItem()");
+        commit('changeItem', itemObjWithIndex);
+    },
 
 
-  DeleteTodoItem ({ commit }, id) {
-
-    axios.delete(API_TODO_ROUTER+"/"+id)
-      .then(function (response){
-        commit('deleteTodoItem', id);
-      })
-      .catch( function (error)   { console.log(error);  } );
-  }
+    DeleteItem({ commit }, itemIndex) {
+        console.log("Step:1.200--actions DeleteItem()");
+        commit('deleteItem', itemIndex);
+    },
 
 
+    CommitItems({ commit }, itemsObj) {
+        console.log("Step:1.300--actions CommitItems()");
+        axios.delete(API_TODO_ROUTER)
+            .then(function (response)
+            {
+                console.log("Step:1.301--actions CommitItems() then");
+                let len = itemsObj.length;
+                for(let i = 0; i < len; i++)
+                {
+                    axios.post(API_TODO_ROUTER, itemsObj[i]);
+                }
+            })
+            .catch(function (error){
+                console.log("Step:1.302--actions CommitItems() catch");
+                console.log(error);
+            });
+    },
+
+
+    InitItems({ commit }) {
+        console.log("Step:1.400--actions InitItems()");
+        return new Promise((on_result) =>{
+            console.log('actions InitTodoItem');
+            axios.get(API_TODO_ROUTER)
+                .then(function (response){
+                    console.log("Step:1.401--actions InitItems() then");
+                    commit('initItems', response.data);
+
+                    console.log(response);
+                    on_result({result:true, message:response.data});
+                })
+                .catch( function (error)   {
+                    console.log("Step:1.402--actions InitItems() catch");
+                    console.log('error');
+                    on_result({result:false, message:error});
+                });
+        });
+    }
 
 };
 

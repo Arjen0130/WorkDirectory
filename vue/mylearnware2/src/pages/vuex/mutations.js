@@ -1,67 +1,96 @@
 
 
 function getIndexbyId(state, id) {
-  for(var i in state.todoItems)
-  {
-    var item = state.todoItems[i];
-
-    if(item._id === id)
+    console.log("Step:3.000--getIndexbyId");
+    for(var i in state.todoItems)
     {
-      return i;
+        var item = state.todoItems[i];
+
+        if(item._id === id)
+        {
+            return i;
+        }
     }
-  }
-  return -1;
+    return -1;
 }
 
 function getItembyId(state, id) {
-  var index = getIndexbyId(state, id);
-  if(index === -1)
-    return null;
+    console.log("Step:3.100--getItembyId");
+    var index = getIndexbyId(state, id);
+    if(index === -1)
+        return null;
 
-  return state.todoItems[index];
+    return state.todoItems[index];
 }
 
 const mutations = {
 
-  initTodoItems(state, todoItems) {
-    state.todoItems = todoItems
-  },
+
+    addItem(state, itemObj){
+
+        console.log("Step:3.200--mutations addItem()");
+
+        if(typeof(itemObj) ==='string')
+        {
+            console.log("Step:3.201--mutations addItem() if string part");
+
+            item = JSON.parse(itemObj);
+        }
+
+        state.localItems.push(itemObj);
+    },
 
 
-  toggleFinishedTodoItem(state, id){
+    changeItem(state, itemObjWithIndex){
+
+        console.log("Step:3.300--mutations changeItem()");
+
+        if(itemObjWithIndex.index === -1)
+        {
+            console.log("Step:3.301--mutations changeItem() if -1 part");
+
+            return;
+        }
+
+        console.log("itemObjWithIndex.index = " + itemObjWithIndex.index
+            + " itemObjWithIndex.label = " + itemObjWithIndex.label);
+        state.localItems[itemObjWithIndex.index] = {label: itemObjWithIndex.label};
+    },
 
 
-    var item = getItembyId(state, id);
+    deleteItem(state, itemIndex){
 
-    if(item)
-    {
-      item.isFinished = !item.isFinished;
-    }
-  },
+        console.log("Step:3.400--mutations deleteItem()");
 
+        if(itemIndex === -1)
+        {
+            console.log("Step:3.401--mutations deleteItem() if -1 part");
 
-  addTodoItem(state, item){
+            return;
+        }
 
-    if(typeof(item) ==='string')
-    {
-      item = JSON.parse(item);
-    }
-    state.todoItems.push(item);
-  },
+        state.localItems.splice(itemIndex, 1);
+    },
 
 
+    initItems(state, itemsObj) {
 
-  deleteTodoItem(state, id){
+        console.log("Step:3.500--mutations initItems()");
 
-    var index = getIndexbyId(state, id);
+        let len = itemsObj.length;
 
-    if(index === -1)
-    {
-       return ;
-    }
+        console.log("len = " + len);
 
-    state.todoItems.splice(index, 1);
-  }
+        state.localItems.splice(0);
+
+        for(let i = 0; i < len; i++)
+        {
+            console.log("itemsObj.label = " + itemsObj[i].label);
+            //state.todoItems[i] = {label: itemsObj[i].label};
+        }
+        state.localItems = itemsObj.slice(0);
+    },
+
 };
 
 export default mutations

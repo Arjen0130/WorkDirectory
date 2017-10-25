@@ -17,3 +17,8 @@ ul li{
   color: darkgreen;
   text-decoration:line-through
 }
+
+.cls-selected{
+  color: red;
+  text-decoration:underline
+}
